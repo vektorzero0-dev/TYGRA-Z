@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TYGRA-Z // Cyber Tiger AI</title>
+  <title>TYGRA-Z // Cybernetic Apex AI</title>
   <style>
     :root {
       --gold: #ffd700;
+      --gold-dark: #b8860b;
       --cyan: #00f0ff;
-      --bg: #05050a;
+      --bg: #030408;
+      --panel-bg: rgba(10, 14, 23, 0.85);
     }
+
+    * { box-sizing: border-box; }
 
     body {
       background-color: var(--bg);
@@ -20,145 +24,194 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       height: 100vh;
+      background-image: 
+        radial-gradient(circle at 50% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 60%),
+        linear-gradient(to bottom, #030408 0%, #0a0d18 100%);
     }
 
-    /* Header Developer Information */
+    /* Developer Header */
     .dev-header {
       position: absolute;
       top: 15px;
       left: 20px;
-      z-index: 20;
-      background: rgba(10, 11, 16, 0.85);
+      z-index: 30;
+      background: var(--panel-bg);
       padding: 10px 18px;
       border-radius: 8px;
       border-left: 3px solid var(--gold);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
       font-size: 13px;
-      letter-spacing: 1px;
+      backdrop-filter: blur(5px);
     }
 
     .dev-header .title {
       color: var(--gold);
       font-weight: bold;
       font-size: 16px;
-      margin-bottom: 3px;
-    }
-
-    .dev-header a {
-      color: var(--cyan);
-      text-decoration: none;
-    }
-
-    /* Avatar Container dengan Efek Aura */
-    .avatar-container {
-      position: relative;
-      width: 280px;
-      height: 280px;
-      margin-top: 40px;
-      border-radius: 50%;
-      padding: 6px;
-      background: linear-gradient(135deg, var(--gold), #8a6d00, var(--cyan));
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3), 0 0 40px rgba(0, 240, 255, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 3px solid #101118;
-    }
-
-    /* Animasi Status Avatar */
-    .avatar-container.listening {
-      animation: pulse-blue 1.2s infinite alternate;
-    }
-
-    .avatar-container.speaking {
-      animation: pulse-gold 0.8s infinite alternate;
-    }
-
-    @keyframes pulse-blue {
-      0% { box-shadow: 0 0 20px var(--cyan); }
-      100% { box-shadow: 0 0 60px var(--cyan), 0 0 90px var(--cyan); }
-    }
-
-    @keyframes pulse-gold {
-      0% { box-shadow: 0 0 20px var(--gold); }
-      100% { box-shadow: 0 0 70px var(--gold), 0 0 100px var(--gold); }
-    }
-
-    /* Status Badge */
-    .status-badge {
-      margin-top: 25px;
-      padding: 6px 16px;
-      border-radius: 20px;
-      background: rgba(255, 215, 0, 0.1);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      color: var(--gold);
-      font-size: 12px;
       letter-spacing: 2px;
-      text-transform: uppercase;
     }
 
-    #response-box {
-      margin-top: 15px;
-      width: 85%;
-      max-width: 550px;
-      text-align: center;
-      font-size: 15px;
-      color: #ececec;
-      min-height: 55px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 12px;
-      border-radius: 6px;
-      border: 1px solid rgba(0, 240, 255, 0.2);
-    }
+    .dev-header a { color: var(--cyan); text-decoration: none; }
 
-    .btn-mic {
-      margin-top: 20px;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #b8860b);
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    /* Area Robot Stage */
+    .stage {
+      flex: 1;
+      width: 100%;
+      max-width: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s;
+      position: relative;
+      margin-top: 30px;
     }
 
-    .btn-mic:hover { transform: scale(1.1); }
-    .btn-mic svg { width: 28px; height: 28px; fill: #000; }
-    .btn-mic.recording { background: #ff4444; animation: pulse-red 1s infinite; }
+    svg {
+      width: 100%;
+      height: 100%;
+      max-height: 520px;
+      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
+    }
+
+    /* ANIMASI PADA BODY ROBOT */
+
+    /* Idle / Breathing Animation */
+    .robot-body {
+      transform-origin: 100px 180px;
+      animation: idle-breath 3.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes idle-breath {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-4px) scale(1.005); }
+    }
+
+    /* Head Breathing Accent */
+    .head-group {
+      transform-origin: 100px 50px;
+      animation: head-tilt 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes head-tilt {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(1.5deg); }
+      100% { transform: rotate(-1.5deg); }
+    }
+
+    /* Listening State (Pose Siaga Pendengaran) */
+    .listening .robot-body {
+      animation: listening-pose 0.6s ease-out forwards;
+    }
+
+    @keyframes listening-pose {
+      100% { transform: translateY(-8px) scale(1.02); }
+    }
+
+    .listening .ear-l { animation: ear-twitch-l 0.3s infinite alternate; }
+    .listening .ear-r { animation: ear-twitch-r 0.3s infinite alternate; }
+
+    @keyframes ear-twitch-l { 0% { transform: rotate(0deg); } 100% { transform: rotate(-6deg); } }
+    @keyframes ear-twitch-r { 0% { transform: rotate(0deg); } 100% { transform: rotate(6deg); } }
+
+    /* Speaking State (Rahang & Dada Cybernetic Bergetar) */
+    .speaking .jaw {
+      animation: talk-jaw 0.2s infinite alternate;
+    }
+
+    @keyframes talk-jaw {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(5px); }
+    }
+
+    .speaking .core-reactor {
+      animation: reactor-glow 0.2s infinite alternate;
+    }
+
+    @keyframes reactor-glow {
+      0% { fill: var(--cyan); filter: drop-shadow(0 0 5px var(--cyan)); }
+      100% { fill: #ffffff; filter: drop-shadow(0 0 20px var(--cyan)); }
+    }
+
+    /* Interface Overlay Bottom */
+    .ui-bottom {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(3,4,8,0.95), transparent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .status-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    }
+
+    #response-box {
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      font-size: 14px;
+      color: #ececec;
+      min-height: 50px;
+      background: var(--panel-bg);
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-mic {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: 2px solid var(--cyan);
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-mic:hover { transform: scale(1.1); box-shadow: 0 0 35px rgba(255, 215, 0, 0.7); }
+    .btn-mic svg { width: 32px; height: 32px; fill: #000; }
+    .btn-mic.recording { background: #ff3344; border-color: #fff; animation: pulse-red 0.8s infinite alternate; }
 
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 10px #ff4444; }
-      100% { box-shadow: 0 0 25px #ff4444; }
+      0% { box-shadow: 0 0 15px #ff3344; }
+      100% { box-shadow: 0 0 35px #ff3344; }
     }
 
     /* Modal API Key */
     .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9); display: flex; align-items: center;
+      background: rgba(0,0,0,0.92); display: flex; align-items: center;
       justify-content: center; z-index: 100;
     }
     .modal-content {
-      background: #101118; padding: 30px; border-radius: 12px;
-      border: 1px solid var(--gold); text-align: center; max-width: 350px;
+      background: #0d101d; padding: 30px; border-radius: 12px;
+      border: 1px solid var(--gold); text-align: center; max-width: 380px;
     }
     .modal input {
-      width: 90%; padding: 12px; margin: 15px 0; background: #000;
-      border: 1px solid var(--cyan); color: #fff; border-radius: 6px;
+      width: 100%; padding: 12px; margin: 15px 0; background: #000;
+      border: 1px solid var(--cyan); color: #fff; border-radius: 6px; font-family: inherit;
     }
     .modal button {
       padding: 12px 24px; background: var(--gold); border: none;
-      font-weight: bold; border-radius: 6px; cursor: pointer; color: #000;
+      font-weight: bold; border-radius: 6px; cursor: pointer; color: #000; width: 100%;
     }
   </style>
 </head>
@@ -174,24 +227,101 @@
   <!-- Modal API Key -->
   <div id="apiModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h3 style="color:var(--gold); margin-top:0;">TYGRA-Z API Key</h3>
+      <h3 style="color:var(--gold); margin-top:0;">TYGRA-Z Mainframe</h3>
       <p style="font-size:12px; color:#aaa;">Masukkan Gemini API Key kamu dari aistudio.google.com:</p>
       <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
-      <button onclick="saveApiKey()">Simpan & Mulai</button>
+      <button onclick="saveApiKey()">Simpan & Otorisasi</button>
     </div>
   </div>
 
-  <!-- Avatar Robot Cyberpunk -->
-  <div class="avatar-container" id="avatarCard">
-    <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=600&q=80" class="avatar-img" alt="TYGRA-Z">
+  <!-- Stage Robot Harimau Berdiri (Full Body Mech) -->
+  <div class="stage">
+    <svg id="robotSvg" viewBox="0 0 200 240">
+      <g class="robot-body">
+        
+        <!-- Kaki & Pelindung Bawah (Standing Stance) -->
+        <!-- Kaki Kiri -->
+        <path d="M 65,160 L 55,200 L 45,230 L 68,235 L 78,200 L 75,160 Z" fill="#121520" stroke="#ffd700" stroke-width="1.5"/>
+        <polygon points="45,225 68,225 72,235 40,235" fill="#00f0ff"/> <!-- Neon Claw Boot L -->
+        <!-- Kaki Kanan -->
+        <path d="M 135,160 L 145,200 L 155,230 L 132,235 L 122,200 L 125,160 Z" fill="#121520" stroke="#ffd700" stroke-width="1.5"/>
+        <polygon points="155,225 132,225 128,235 160,235" fill="#00f0ff"/> <!-- Neon Claw Boot R -->
+
+        <!-- Ekor Cybernetic (Cyber Tail) -->
+        <path d="M 130,165 Q 170,180 160,130 T 175,90" fill="none" stroke="#ffd700" stroke-width="3" stroke-dasharray="8 3"/>
+
+        <!-- Pinggul & Sabuk Power -->
+        <polygon points="60,150 140,150 130,170 70,170" fill="#1c1f2e" stroke="#ffd700" stroke-width="2"/>
+        <rect x="88" y="153" width="24" height="12" fill="#00f0ff" rx="2"/>
+
+        <!-- Dada & Body Armor (Pelindung Keemasan) -->
+        <path d="M 50,85 L 150,85 L 135,152 L 65,152 Z" fill="#181b28" stroke="#ffd700" stroke-width="2.5"/>
+        <!-- Golden Chest Plates (Loreng Keemasan Armor) -->
+        <polygon points="55,90 90,90 80,120 58,110" fill="#ffd700"/>
+        <polygon points="145,90 110,90 120,120 142,110" fill="#ffd700"/>
+        <polygon points="85,125 100,145 115,125 100,135" fill="#ffd700"/>
+
+        <!-- Core Arc Reactor (Dada Tengah) -->
+        <polygon class="core-reactor" points="100,93 112,105 100,117 88,105" fill="#00f0ff" stroke="#ffffff" stroke-width="1.5"/>
+
+        <!-- Bahu Gahar (Shoulder Armor Pads) -->
+        <path d="M 35,80 L 58,85 L 52,115 L 28,100 Z" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/>
+        <path d="M 165,80 L 142,85 L 148,115 L 172,100 Z" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/>
+
+        <!-- Tangan Kiri & Kepalan Cyber -->
+        <path d="M 38,105 L 25,140 L 38,165 L 48,160 L 38,138 L 48,108 Z" fill="#121520" stroke="#ffd700" stroke-width="1.5"/>
+        <circle cx="38" cy="168" r="8" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/> <!-- Clenched Fist L -->
+
+        <!-- Tangan Kanan & Kepalan Cyber -->
+        <path d="M 162,105 L 175,140 L 162,165 L 152,160 L 162,138 L 152,108 Z" fill="#121520" stroke="#ffd700" stroke-width="1.5"/>
+        <circle cx="162" cy="168" r="8" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/> <!-- Clenched Fist R -->
+
+        <!-- Kepala Harimau (Head Group) -->
+        <g class="head-group">
+          <!-- Telinga Mecha -->
+          <polygon class="ear-l" points="60,40 45,10 75,25" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/>
+          <polygon class="ear-r" points="140,40 155,10 125,25" fill="#ffd700" stroke="#00f0ff" stroke-width="1.5"/>
+
+          <!-- Struktur Helm/Wajah -->
+          <path d="M 60,35 L 140,35 L 150,68 L 130,90 L 70,90 L 50,68 Z" fill="#181b28" stroke="#ffd700" stroke-width="2"/>
+
+          <!-- Loreng Dahi Emas -->
+          <polygon points="100,35 93,48 107,48" fill="#ffd700"/>
+          <polygon points="72,42 85,45 78,52" fill="#ffd700"/>
+          <polygon points="128,42 115,45 122,52" fill="#ffd700"/>
+
+          <!-- Visor Mata Neon Cyan -->
+          <polygon points="65,55 135,55 130,68 70,68" fill="#00f0ff" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
+          <circle cx="82" cy="61.5" r="3.5" fill="#ffffff"/>
+          <circle cx="118" cy="61.5" r="3.5" fill="#ffffff"/>
+
+          <!-- Hidung Mecha -->
+          <polygon points="95,73 105,73 100,80" fill="#00f0ff"/>
+
+          <!-- Rahang Mulut Bergerak (Jaw Group) -->
+          <g class="jaw">
+            <path d="M 72,82 L 128,82 L 115,96 L 85,96 Z" fill="#222534" stroke="#ffd700" stroke-width="1.5"/>
+            <!-- Taring Emas -->
+            <polygon points="82,82 86,82 84,87" fill="#ffd700"/>
+            <polygon points="118,82 114,82 116,87" fill="#ffd700"/>
+            <!-- Kumis Laser -->
+            <line x1="45" y1="80" x2="68" y2="82" stroke="#00f0ff" stroke-width="1.5"/>
+            <line x1="155" y1="80" x2="132" y2="82" stroke="#00f0ff" stroke-width="1.5"/>
+          </g>
+        </g>
+
+      </g>
+    </svg>
   </div>
 
-  <div class="status-badge" id="statusText">SYSTEM STANDBY</div>
-  <div id="response-box">Tekan mikrofon untuk berbicara dengan TYGRA-Z...</div>
-
-  <button class="btn-mic" id="micBtn" onclick="startListening()">
-    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-  </button>
+  <!-- UI Bottom Panel -->
+  <div class="ui-bottom">
+    <div class="status-badge" id="statusText">SYSTEM STANDBY</div>
+    <div id="response-box">Tekan mikrofon untuk berbicara dengan TYGRA-Z...</div>
+    <button class="btn-mic" id="micBtn" onclick="startListening()">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
+  </div>
 
   <script>
     let apiKey = localStorage.getItem('GEMINI_API_KEY') || '';
@@ -206,7 +336,7 @@
       }
     }
 
-    const avatarCard = document.getElementById('avatarCard');
+    const robotSvg = document.getElementById('robotSvg');
     const statusText = document.getElementById('statusText');
     const responseBox = document.getElementById('response-box');
     const micBtn = document.getElementById('micBtn');
@@ -220,7 +350,7 @@
       recognition.onstart = () => {
         statusText.innerText = "MENDENGARKAN...";
         micBtn.classList.add('recording');
-        avatarCard.className = "avatar-container listening";
+        robotSvg.className.baseVal = "listening";
       };
 
       recognition.onresult = async (e) => {
@@ -236,7 +366,7 @@
       recognition.onerror = () => {
         statusText.innerText = "SYSTEM STANDBY";
         micBtn.classList.remove('recording');
-        avatarCard.className = "avatar-container";
+        robotSvg.className.baseVal = "";
       };
 
       recognition.onend = () => {
@@ -276,12 +406,12 @@
 
       utter.onstart = () => {
         statusText.innerText = "BERBICARA...";
-        avatarCard.className = "avatar-container speaking";
+        robotSvg.className.baseVal = "speaking";
       };
 
       utter.onend = () => {
         statusText.innerText = "SYSTEM STANDBY";
-        avatarCard.className = "avatar-container";
+        robotSvg.className.baseVal = "";
       };
 
       window.speechSynthesis.speak(utter);
