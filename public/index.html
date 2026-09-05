@@ -9,6 +9,7 @@
       --gold: #ffd700;
       --cyan: #00f0ff;
       --bg: #030408;
+      --panel-bg: rgba(10, 14, 23, 0.85);
     }
 
     * { box-sizing: border-box; }
@@ -21,7 +22,12 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
       height: 100vh;
+      background-image: 
+        radial-gradient(circle at 50% 35%, rgba(255, 215, 0, 0.1) 0%, transparent 60%),
+        linear-gradient(to bottom, #030408 0%, #0a0d18 100%);
     }
 
     /* Dev Header */
@@ -30,7 +36,7 @@
       top: 15px;
       left: 20px;
       z-index: 30;
-      background: rgba(10, 14, 23, 0.85);
+      background: var(--panel-bg);
       padding: 10px 18px;
       border-radius: 8px;
       border-left: 3px solid var(--gold);
@@ -48,41 +54,65 @@
 
     .dev-header a { color: var(--cyan); text-decoration: none; }
 
-    /* Canvas Container */
-    #canvas-container {
+    /* Area Display Avatar Cyberpunk */
+    .stage {
       flex: 1;
       width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    /* Loading Overlay */
-    #loading-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 50;
-      color: var(--gold);
+      position: relative;
+      margin-top: 20px;
     }
 
-    /* UI Bottom Overlay */
+    .avatar-card {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      padding: 6px;
+      background: linear-gradient(135deg, var(--gold), #8a6d00, var(--cyan));
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 50px rgba(0, 240, 255, 0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #030408;
+    }
+
+    /* Animasi Status Avatar */
+    .avatar-card.listening {
+      animation: pulse-cyan 1.2s infinite alternate;
+    }
+
+    .avatar-card.speaking {
+      animation: pulse-gold 0.8s infinite alternate;
+    }
+
+    @keyframes pulse-cyan {
+      0% { box-shadow: 0 0 20px var(--cyan); transform: scale(1); }
+      100% { box-shadow: 0 0 60px var(--cyan), 0 0 90px var(--cyan); transform: scale(1.03); }
+    }
+
+    @keyframes pulse-gold {
+      0% { box-shadow: 0 0 25px var(--gold); transform: scale(1); }
+      100% { box-shadow: 0 0 70px var(--gold), 0 0 100px var(--gold); transform: scale(1.04); }
+    }
+
+    /* Interface Overlay Bottom */
     .ui-bottom {
       width: 100%;
       padding: 20px;
-      position: absolute;
-      bottom: 0;
+      background: linear-gradient(to top, rgba(3,4,8,0.95), transparent);
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 20;
-      background: linear-gradient(to top, rgba(3,4,8,0.95), transparent);
     }
 
     .status-badge {
@@ -105,7 +135,7 @@
       font-size: 14px;
       color: #ececec;
       min-height: 50px;
-      background: rgba(10, 14, 23, 0.85);
+      background: var(--panel-bg);
       padding: 12px 18px;
       border-radius: 8px;
       border: 1px solid rgba(0, 240, 255, 0.25);
@@ -146,14 +176,12 @@
     <div>Email: <a href="mailto:Vektorzero0@gmail.com">Vektorzero0@gmail.com</a></div>
   </div>
 
-  <!-- Loading Screen -->
-  <div id="loading-screen">
-    <h3 style="letter-spacing:2px;">[ INITIALIZING TYGRA-Z 3D MODEL ]</h3>
-    <div style="color:var(--cyan); font-size:14px;">Memuat Aset Fisik Robot Harimau...</div>
+  <!-- Stage Cyber Avatar -->
+  <div class="stage">
+    <div class="avatar-card" id="avatarCard">
+      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=600&q=80" class="avatar-img" alt="TYGRA-Z">
+    </div>
   </div>
-
-  <!-- Render Area 3D -->
-  <div id="canvas-container"></div>
 
   <!-- UI Interface -->
   <div class="ui-bottom">
@@ -164,100 +192,8 @@
     </button>
   </div>
 
-  <!-- Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
-
   <script>
-    // --- THREE.JS 3D MODEL RENDERER ---
-    let scene, camera, renderer, mixer, clock, controls, tigerModel;
-    const container = document.getElementById('canvas-container');
-
-    function init3D() {
-      clock = new THREE.Clock();
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x030408);
-      scene.fog = new THREE.Fog(0x030408, 5, 25);
-
-      camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(0, 1.2, 3.5);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.shadowMap.enabled = true;
-      container.appendChild(renderer.domElement);
-
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.target.set(0, 0.8, 0);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-
-      // Pencahayaan Cyberpunk
-      const dirLight = new THREE.DirectionalLight(0xffd700, 2.0);
-      dirLight.position.set(5, 10, 7);
-      dirLight.castShadow = true;
-      scene.add(dirLight);
-
-      const cyanLight = new THREE.PointLight(0x00f0ff, 3, 10);
-      cyanLight.position.set(-3, 2, -2);
-      scene.add(cyanLight);
-
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
-      // Memuat Model 3D Fisik Harimau Khronos
-      const loader = new THREE.GLTFLoader();
-      const modelUrl = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Tiger/glTF-Binary/Tiger.glb';
-
-      loader.load(modelUrl, function (gltf) {
-        tigerModel = gltf.scene;
-        tigerModel.scale.set(0.45, 0.45, 0.45);
-        tigerModel.position.set(0, 0, 0);
-
-        tigerModel.traverse(function (obj) {
-          if (obj.isMesh) {
-            obj.castShadow = true;
-            obj.receiveShadow = true;
-          }
-        });
-
-        scene.add(tigerModel);
-
-        // Mengaktifkan Animasi Bawaan Model 3D
-        if (gltf.animations && gltf.animations.length > 0) {
-          mixer = new THREE.AnimationMixer(tigerModel);
-          const action = mixer.clipAction(gltf.animations[0]);
-          action.play();
-        }
-
-        document.getElementById('loading-screen').style.display = 'none';
-        animate();
-      }, undefined, function (error) {
-        console.error("Gagal memuat model 3D:", error);
-        document.getElementById('loading-screen').innerHTML = "<div style='color:#ff3344;'>Gagal memuat model 3D. Periksa koneksi internet.</div>";
-      });
-
-      window.addEventListener('resize', onWindowResize);
-    }
-
-    function onWindowResize() {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      if (mixer) mixer.update(delta);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    init3D();
-
-    // --- INTEGRASI VOICE & BACKEND ---
+    const avatarCard = document.getElementById('avatarCard');
     const statusText = document.getElementById('statusText');
     const responseBox = document.getElementById('response-box');
     const micBtn = document.getElementById('micBtn');
@@ -267,14 +203,20 @@
 
     if (recognition) {
       recognition.lang = 'id-ID';
-      recognition.onstart = () => { statusText.innerText = "MENDENGARKAN..."; micBtn.classList.add('recording'); };
+
+      recognition.onstart = () => {
+        statusText.innerText = "MENDENGARKAN...";
+        micBtn.classList.add('recording');
+        avatarCard.className = "avatar-card listening";
+      };
+
       recognition.onresult = async (e) => {
         const text = e.results[0][0].transcript;
         responseBox.innerText = `User: "${text}"`;
         statusText.innerText = "MEMPROSES DATA...";
 
         try {
-          // Terhubung ke Server Backend Render
+          // Panggil Backend Server di Render
           const res = await fetch('https://tygra-z-backend.onrender.com/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -286,10 +228,19 @@
         } catch (err) {
           responseBox.innerText = "Gagal terhubung ke backend server.";
           statusText.innerText = "SYSTEM ERROR";
+          avatarCard.className = "avatar-card";
         }
       };
-      recognition.onerror = () => { statusText.innerText = "SYSTEM STANDBY"; micBtn.classList.remove('recording'); };
-      recognition.onend = () => { micBtn.classList.remove('recording'); };
+
+      recognition.onerror = () => {
+        statusText.innerText = "SYSTEM STANDBY";
+        micBtn.classList.remove('recording');
+        avatarCard.className = "avatar-card";
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('recording');
+      };
     }
 
     function startListening() {
@@ -300,8 +251,17 @@
     function speak(text) {
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'id-ID';
-      utter.onstart = () => { statusText.innerText = "BERBICARA..."; };
-      utter.onend = () => { statusText.innerText = "SYSTEM STANDBY"; };
+
+      utter.onstart = () => {
+        statusText.innerText = "BERBICARA...";
+        avatarCard.className = "avatar-card speaking";
+      };
+
+      utter.onend = () => {
+        statusText.innerText = "SYSTEM STANDBY";
+        avatarCard.className = "avatar-card";
+      };
+
       window.speechSynthesis.speak(utter);
     }
   </script>
