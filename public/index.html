@@ -3,11 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TYGRA-Z // Cybernetic Robot AI</title>
-  
-  <!-- Import Library 3D Robot Resmi dari Google -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
+  <title>TYGRA-Z // Cybernetic Apex AI</title>
   <style>
     :root {
       --gold: #ffd700;
@@ -25,8 +21,12 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
       height: 100vh;
-      background-image: radial-gradient(circle at 50% 35%, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+      background-image: 
+        radial-gradient(circle at 50% 40%, rgba(255, 215, 0, 0.12) 0%, transparent 65%),
+        linear-gradient(to bottom, #030408 0%, #080c18 100%);
     }
 
     /* Dev Header */
@@ -42,21 +42,43 @@
       font-size: 13px;
       backdrop-filter: blur(5px);
     }
-    .dev-header .title { color: var(--gold); font-weight: bold; font-size: 16px; }
+    .dev-header .title { color: var(--gold); font-weight: bold; font-size: 16px; letter-spacing: 1px; }
     .dev-header a { color: var(--cyan); text-decoration: none; }
 
-    /* Area Stage Model 3D Robot */
-    .robot-stage {
+    /* Stage Canvas Robot Harimau */
+    .stage {
       flex: 1;
       width: 100%;
-      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       position: relative;
     }
 
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
+    /* Graphic SVG Vector Mecha Tiger */
+    .tiger-mecha {
+      width: 280px;
+      height: 280px;
+      filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.4));
+      transition: all 0.3s ease;
+      animation: idle-breath 3s infinite ease-in-out;
+    }
+
+    @keyframes idle-breath {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.02); }
+    }
+
+    /* Animasi saat Berbicara */
+    .speaking .tiger-mecha {
+      animation: speak-pulse 0.5s infinite alternate ease-in-out;
+      filter: drop-shadow(0 0 45px rgba(0, 240, 255, 0.8));
+    }
+
+    @keyframes speak-pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.06); }
     }
 
     /* UI Bottom */
@@ -95,6 +117,7 @@
       border-radius: 8px;
       border: 1px solid rgba(0, 240, 255, 0.25);
       margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     }
 
     .btn-mic {
@@ -120,7 +143,7 @@
     }
   </style>
 </head>
-<body>
+<body id="appBody">
 
   <!-- Dev Header -->
   <div class="dev-header">
@@ -129,19 +152,33 @@
     <div>Email: <a href="mailto:Vektorzero0@gmail.com">Vektorzero0@gmail.com</a></div>
   </div>
 
-  <!-- Stage Robot 3D -->
-  <div class="robot-stage">
-    <model-viewer 
-      id="botViewer"
-      src="https://modelviewer.dev/shared-assets/models/RobotExpressive.glb"
-      alt="TYGRA-Z Robot Assistant"
-      auto-rotate
-      camera-controls
-      shadow-intensity="2"
-      environment-image="neutral"
-      animation-name="Running"
-      autoplay>
-    </model-viewer>
+  <!-- Stage Mecha Tiger Vector -->
+  <div class="stage">
+    <svg class="tiger-mecha" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Telinga Mecha -->
+      <polygon points="35,45 65,70 25,80" fill="#ffd700" stroke="#00f0ff" stroke-width="2"/>
+      <polygon points="165,45 135,70 175,80" fill="#ffd700" stroke="#00f0ff" stroke-width="2"/>
+      
+      <!-- Kepala Armor Emas -->
+      <polygon points="100,25 155,60 145,130 100,165 55,130 45,60" fill="#121624" stroke="#ffd700" stroke-width="4"/>
+      <polygon points="100,35 145,65 135,120 100,150 65,120 55,65" fill="#1a2035"/>
+      
+      <!-- Loreng Cybernetic Emas -->
+      <path d="M70,55 L90,70 L75,80" fill="none" stroke="#ffd700" stroke-width="3"/>
+      <path d="M130,55 L110,70 L125,80" fill="none" stroke="#ffd700" stroke-width="3"/>
+      <polygon points="100,40 93,55 107,55" fill="#ffd700"/>
+
+      <!-- Mata Visor Neon Cyan -->
+      <polygon points="60,85 90,85 85,95 65,95" fill="#00f0ff"/>
+      <polygon points="140,85 110,85 115,95 135,95" fill="#00f0ff"/>
+
+      <!-- Hidung & Rahang Robot -->
+      <polygon points="100,105 90,120 110,120" fill="#ffd700"/>
+      <path d="M80,135 Q100,150 120,135" fill="none" stroke="#00f0ff" stroke-width="3" id="jawLine"/>
+
+      <!-- Core Reactor Dada -->
+      <circle cx="100" cy="175" r="12" fill="#00f0ff" stroke="#ffd700" stroke-width="2"/>
+    </svg>
   </div>
 
   <!-- UI Controls -->
@@ -154,12 +191,11 @@
   </div>
 
   <script>
-    const botViewer = document.getElementById('botViewer');
+    const appBody = document.getElementById('appBody');
     const statusText = document.getElementById('statusText');
     const responseBox = document.getElementById('response-box');
     const micBtn = document.getElementById('micBtn');
 
-    // Integrasi Suara & Backend
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
@@ -169,18 +205,14 @@
       recognition.onstart = () => {
         statusText.innerText = "MENDENGARKAN...";
         micBtn.classList.add('recording');
-        // Ubah animasi robot saat mendengarkan
-        botViewer.animationName = "Wave";
       };
 
       recognition.onresult = async (e) => {
         const text = e.results[0][0].transcript;
         responseBox.innerText = `User: "${text}"`;
         statusText.innerText = "MEMPROSES DATA...";
-        botViewer.animationName = "ThumbsUp";
 
         try {
-          // Panggil server backend kamu di Render
           const res = await fetch('https://tygra-z-backend.onrender.com/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -190,16 +222,15 @@
           responseBox.innerText = data.reply;
           speak(data.reply);
         } catch (err) {
-          responseBox.innerText = "Gagal terhubung ke server backend.";
+          responseBox.innerText = "Gagal terhubung ke backend server.";
           statusText.innerText = "SYSTEM ERROR";
-          botViewer.animationName = "Death";
         }
       };
 
       recognition.onerror = () => {
         statusText.innerText = "SYSTEM STANDBY";
         micBtn.classList.remove('recording');
-        botViewer.animationName = "Running";
+        appBody.className = "";
       };
 
       recognition.onend = () => {
@@ -218,13 +249,12 @@
 
       utter.onstart = () => {
         statusText.innerText = "BERBICARA...";
-        // Robot melakukan animasi berbicara/ekspresif
-        botViewer.animationName = "Jump";
+        appBody.className = "speaking";
       };
 
       utter.onend = () => {
         statusText.innerText = "SYSTEM STANDBY";
-        botViewer.animationName = "Running";
+        appBody.className = "";
       };
 
       window.speechSynthesis.speak(utter);
