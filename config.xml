@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.zeeo.tygraz" version="1.0.0" xmlns="http://www.cordova.io/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>TYGRA-Z</name>
+    <description>
+        TYGRA-Z Cybernetic Mecha Engine AI Assistant by Zeeo
+    </description>
+    <author email="Vektorzero0@gmail.com" href="https://wa.me/6282371729760">
+        Zeeo
+    </author>
+    
+    <content src="index.html" />
+    
+    <!-- Izin Akses Perangkat -->
+    <plugin name="cordova-plugin-whitelist" version="1" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    
+    <!-- Fitur Kunci: Buka Autoplay Audio dan Izin Mikrofon di Android -->
+    <preference name="MediaPlaybackRequiresUserGesture" value="false" />
+    <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="OverrideUserAgent" value="Mozilla/5.0 Google" />
+    
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <preference name="AndroidXEnabled" value="true" />
+        <!-- Pengaturan suara dan perekaman suara -->
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+            <uses-permission android:name="android.permission.AUDIO_CAPTURE" />
+        </config-file>
+    </platform>
+</widget>
